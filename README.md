@@ -1,5 +1,7 @@
 # dsh-mol-structure
 
+**GitHub**: <https://github.com/Masterchiefm/dsh-mol-structure> · npm: `dsh-mol-structure`（待发布） · License: MIT
+
 A **DeepSeek Harness (dsh) plugin** that embeds a local [Mol\*](https://molstar.org) v5
 structural-biology viewer in the app's right sidebar, lets the **agent** load, render,
 annotate and analyze molecular structures on request, and reports the **user's
@@ -43,30 +45,57 @@ runtime — structure files and the Mol\* UI stylesheet are bundled/served local
 
 ## Install (desktop app)
 
-The desktop profile is managed by the Electron app — use the in-app plugin
-manager (设置 → 插件 → 本地路径安装, pointing at this directory), or place a
-**real directory** (no symlink/junction) manually, as with any third-party
-bundle:
+**前置**：无需构建——`dist/` 已随仓库提交，克隆即可安装。只有在改 `src/` 重新出图/开发时才需要 Node ≥ 20。
 
-1. copy the package (with `dist/` built — see below) to
-   `%DSH_HOME%\profiles\desktop\node_modules\dsh-mol-structure\`
-2. add `"dsh-mol-structure": "0.2.0"` (exact version) to the profile
-   `package.json` `dependencies`
+### 方式 A · 让 dsh 里的 agent 安装（推荐）
+
+任一已打开的 dsh 会话里，把仓库克隆到本地任意目录，然后直接对 agent 说：
+
+> 请安装插件 `C:\path\to\dsh-mol-structure`
+
+agent 会调用 `plugin_manager`（`install_bundle`，target = 仓库目录的**绝对路径**，真实目录、
+不要符号链接）——它自动完成 profile `package.json` 依赖登记、`cordis.patch.yml` 挂载与
+client 半身注册，`application: "applied"` 即生效。装完重启应用或新开会话，右侧边栏出现
+**「结构视图」**卡片。
+
+### 方式 B · 桌面端手动安装
+
+设置 → 插件 → **本地路径安装**，指向克隆出的目录；或者手动放置（与任何第三方 bundle 相同）：
+
+1. copy the package（含 `dist/`）to `%DSH_HOME%\profiles\desktop\node_modules\dsh-mol-structure\`
+2. add `"dsh-mol-structure": "*"` to the profile `package.json` `dependencies`
 3. append `"dsh-mol-structure"` to `dsh.profile.bundles`
 
 Do **not** add an entry to the profile `cordis.patch.yml` — the bundle's own
 `cordis.patch.yml` (one `insert` row, id `mol-structure`) applies automatically.
 
-Pure web profiles (`dsh web`) can install via CLI:
-`dsh plugin --profile web add <path-to-this-directory>`.
+### 方式 C · 纯 web profile（`dsh web`）
 
-Config (bundle row `config`, all optional): `watch: true` (dev file watcher),
-`screenshotDir` (default `%DSH_HOME%\mol-structure\shots`), `commandTimeoutMs`
-(default 90000), `controlCard: 'show'|'hide'` (force the panel card),
-`defaultMode: 'simple'|'full'` (viewer UI on open). The last two are also
-exposed in 设置 → General (persisted in `%DSH_HOME%\mol-structure\settings.json`;
-bundle config outranks the stored value). `mol_load` also accepts
-cif/bcif/pdb/ent/pdbqt/pqr/gro/xyz/mol/sdf/mol2 files.
+```bash
+git clone https://github.com/Masterchiefm/dsh-mol-structure.git
+dsh plugin --profile web add C:\path\to\dsh-mol-structure
+```
+
+### 从 npm 安装（暂未发布）
+
+包名 `dsh-mol-structure`（MIT，零运行时依赖，molstar 仅是 devDependency）。
+当前作者的 npm token 无发布权限；具备权限后 `npm publish` 即可，届时
+`install_bundle`/`dsh plugin add` 直接填 `dsh-mol-structure`。
+
+### 安装后自检
+
+1. 右侧边栏出现「结构视图」卡片 → 点击打开 iframe viewer；
+2. 对 agent 说「加载 6w5c」→ `mol_load` 返回链清单并自动注册界面视图；
+3. 在 3D 视图点击残基 → `mol_status` 能读到该次点击（`source: "user"`）。
+
+### Config（bundle row `config`，均可选）
+
+`watch: true`（dev 文件监视）、`screenshotDir`（默认 `%DSH_HOME%\mol-structure\shots`）、
+`commandTimeoutMs`（默认 90000）、`controlCard: 'show'|'hide'`（强制面板卡显隐）、
+`defaultMode: 'simple'|'full'`（打开时的查看器 UI）、`pixelScale`（渲染分辨率倍率 0.5–3，
+默认 1.5——显存与截图清晰度随其平方变化）。后三项也暴露在设置 → General（持久化于
+`%DSH_HOME%\mol-structure\settings.json`；bundle config 优先于存储值）。`mol_load` 接受
+cif/bcif/pdb/ent/pdbqt/pqr/gro/xyz/mol/sdf/mol2 文件。
 
 ## Agent tools
 
