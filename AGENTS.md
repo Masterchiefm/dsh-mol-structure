@@ -446,7 +446,5 @@ roll 绕视轴的屏幕旋转、zoom>1 拉近；`targetKey`+`radius` 用于 clos
 - `Export PNG ×4` 与 `mol_screenshot` 只导出 WebGL 画面（无 HTML 标签）；
   带标签成图用 `npm run capture` 的 `-page.png` 或整页截图。
   `docs/screenshots/final/` 是权威存档（每面板 page+canvas 两版），
-  `iterations/` 是校准历史，勿作对照基准。**截图仅存本地不入 git**（~220MB）：
-  .gitignore 挡掉整个 `docs/screenshots/`，只保留 README 引用的 `readme/`
-  三张；换机器时用 `npm run capture` 重新生成。
+  `iterations/` 是校准历史，勿作对照基准。
 - 提交信息用英文祈使句；远端为 `Masterchiefm/dsh-mol-structure`（GitHub）。
