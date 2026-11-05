@@ -74,7 +74,7 @@ def is_nucleic(comp):
 
 
 def main():
-    cif = sys.argv[1] if len(sys.argv) > 1 else 'public/structures/4un3.cif'
+    cif = sys.argv[1] if len(sys.argv) > 1 else 'dist/structures/4un3.cif'
     atoms = parse_atoms(cif)
     protein = [a for a in atoms if a[0] == 'B' and a[2] in AA3]
     nucleic = [a for a in atoms if a[0] in ('A', 'C', 'D') and is_nucleic(a[2])]

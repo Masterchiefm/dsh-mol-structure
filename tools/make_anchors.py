@@ -1,7 +1,7 @@
 """Generate label-anchor coordinates from an mmCIF, for any paper.
 
 Run:  python -I tools/make_anchors.py <paper>     (paper key from PAPERS below)
-Out:  public/structures/label-anchors-<paper>.json
+Out:  dist/structures/label-anchors-<paper>.json
 
 Anchors are per-residue-set centroids (all atoms of the listed residues),
 used by src/labels.js to place publication-style HTML labels in 3D.
@@ -17,7 +17,7 @@ ranges per chain, labeled residues, numbered nucleotides, chains whose
 import json
 import sys
 
-CIF_DIR = "public/structures/"
+CIF_DIR = "dist/structures/"
 
 # ---------------------------------------------------------------- paper configs
 

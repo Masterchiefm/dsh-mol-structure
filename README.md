@@ -94,7 +94,7 @@ Do **not** add an entry to the profile `cordis.patch.yml` — the bundle's own
 对 agent 说「加载 4oo8 并看看它怎么识别 DNA」即可复现下面的过程。结构：
 Staphylococcus aureus Cas9（SaCas9）– sgRNA – 目标 DNA 三元复合物
 （PDB **[4OO8](https://www.rcsb.org/structure/4OO8)**，Nishimasu et al. 2015，
-本地文件 `public/structures/4oo8.cif`）。
+本地文件 `dist/structures/4oo8.cif`）。
 链组成：**A** = SaCas9（aa 3–1366）· **B** = sgRNA（97 nt）· **C** = 目标 DNA TS（0–20，
 PAM 端）· D/E/F 为晶体内第二个复合物副本。
 

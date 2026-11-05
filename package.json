@@ -15,7 +15,6 @@
     "client.js",
     "host/",
     "src/",
-    "public/",
     "dist/",
     "index.html",
     "vite.config.js",
@@ -36,7 +35,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node tools/prebuild-clean.mjs && vite build",
     "preview": "vite preview",
     "capture": "node tools/capture-panels.mjs",
     "manifest": "node tools/build-manifest.mjs",

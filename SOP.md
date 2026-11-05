@@ -32,11 +32,11 @@
 ```bash
 mkdir dsh-mol-structure && cd dsh-mol-structure
 npm init -y && npm i molstar && npm i -D vite
-# 结构文件本地化（离线运行的关键）
-mkdir -p public/structures
-curl -sSL -o public/structures/7xht.cif https://files.rcsb.org/download/7XHT.cif
+# 结构文件本地化（离线运行的关键；dist/ 是唯一的静态资产副本）
+mkdir -p dist/structures
+curl -sSL -o dist/structures/7xht.cif https://files.rcsb.org/download/7XHT.cif
 # UI 样式本地化（用预构建 css，避免 sass 工具链）
-cp node_modules/molstar/build/viewer/molstar.css public/molstar.css
+cp node_modules/molstar/build/viewer/molstar.css dist/molstar.css
 ```
 
 - `index.html`：挂载点 `#app` + 控制 UI；`<link rel="stylesheet" href="./molstar.css">`。
@@ -159,7 +159,7 @@ yaw ±180；roll 取相反符号（从背面看时屏幕方向也镜像）。
 
 仓库天然支持多篇论文并列：
 
-1. **结构文件**：`public/structures/<pdb>.cif`；
+1. **结构文件**：`dist/structures/<pdb>.cif`；
 2. **锚点**：在 `tools/make_anchors.py` 的 `PAPERS` 里加一个条目（cif 文件名、
    domains/regions/residues/nums/end_chains，SS 不需要就设 None），然后
    `python -I tools/make_anchors.py <paper>` 生成 `label-anchors-<paper>.json`；
@@ -276,7 +276,7 @@ dsh-our-free-model 热重载实现）：
 
 - 旧示例（论文面板按钮区）在内嵌模式下默认收起，右上角 `☰ 面板` 唤出；
   bundle config `controlCard: 'show'|'hide'|'auto'` 覆盖默认行为。
-- 自定义标签两条路：① 论文面板走 `public/structures/label-anchors-<paper>.json`
+- 自定义标签两条路：① 论文面板走 `dist/structures/label-anchors-<paper>.json`
   （tools/make_anchors.py 预计算残基/末端质心，anchorKey 引用）；② 任意结构运行时
   锚定——`mol_labels`/面板 labels 传 `{chain, seq}` 即可，查看器实时算残基质心
   （StructureElement.Loci.getBoundary），无需锚点文件；`{xyz:[x,y,z]}` 直接世界坐标。

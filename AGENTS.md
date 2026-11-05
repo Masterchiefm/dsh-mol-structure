@@ -67,12 +67,12 @@ dsh-mol-structure/
 ├── tools/capture-panels.mjs   ← Playwright 无头批量截图（自动发现 [data-figures]，
 │                                每面板输出 page 版含标签 + canvas 版纯 WebGL）
 ├── tools/check_panels.py      ← 截图程序化检查（唯一性/前景占比/预期色簇）
-├── public/
+├── dist/                      ← vite 产物 + 静态资产（插件静态服务的根，必须随包分发）
 │   ├── molstar.css            ← 从 node_modules/molstar/build/viewer/molstar.css 拷贝
-│   └── structures/
-│       ├── 7xht.cif / 6w5c.cif              ← RCSB 结构文件（离线使用）
-│       └── label-anchors-<paper>.json       ← 生成的锚点（iscb 141 / cas12i 57）
-├── dist/                      ← npm run build 产物（插件静态服务的根，必须随包分发）
+│   ├── structures/
+│   │   ├── 7xht.cif / 6w5c.cif / 4un3.cif / 4oo8.cif   ← RCSB 结构文件（离线使用）
+│   │   └── label-anchors-<paper>.json       ← 生成的锚点（iscb 141 / cas12i 57）
+│   └── assets/                ← vite 构建产物（tools/prebuild-clean.mjs 只清这部分）
 ├── reference/                 ← 论文原文 + pdf-pages/*.png 高清裁剪（视觉对照基准）
 └── docs/screenshots/
     ├── final/                 ← 权威成图（npm run capture 生成：18 面板 × page/canvas）
@@ -247,7 +247,8 @@ dsh-mol-structure/
   `PANELS=fig3c SETTLE_MS=12000 npm run capture` 可单 panel/调等待；
   Playwright 优先用已装 chromium，缺省回退系统 Edge/Chrome）。
 - `python -I tools/check_panels.py` → 截图自检（陈旧帧/空白渲染/预期色簇缺失）。
-- 结构文件从 `public/structures/` 本地服务，运行时**不加载任何远程资源**。
+- 结构文件从 `dist/structures/` 本地服务（dist 是结构/css 的**唯一副本**，vite dev 由
+  中间件直接从 dist 取），运行时**不加载任何远程资源**。
 - 热重载开发回路：改 `index.js`/`host/*.js` → `POST /api/mol-structure/reload`（或 bundle
   config `watch: true` 自动触发）→ 插件原位换新代码，SSE 重连、gen+1、查看器页面自动刷新；
   改 `client.js` → 直接替换已安装副本，内核 client-hmr 自动热换浏览器半身；
@@ -435,7 +436,7 @@ roll 绕视轴的屏幕旋转、zoom>1 拉近；`targetKey`+`radius` 用于 clos
 
 ## 约定
 
-- 所有第三方代码本地化：molstar 来自 npm 安装，结构文件与 UI CSS 均拷贝进 `public/`；
+- 所有第三方代码本地化：molstar 来自 npm 安装，结构文件与 UI CSS 均放在 `dist/`；
   运行时不依赖 molstar.org / RCSB 网络；插件运行时零 npm 依赖、零 `@deepseek-ai/*` 导入。
 - 插件半身分工：宿主语义进 `host/`，查看器语义进 `src/`，`client.js` 只做页签 iframe 与
   panel 打开转发——不要把 Mol* 打进浏览器半身（体量与构建复杂度都不值得）。

@@ -34,12 +34,12 @@ list: `C:\Users\moqiq\PycharmProjects\dsh-mol-structure\AGENTS.md`.
 1. **Read the paper**: identify the structure figure panels, the PDB id
    (Data availability), the linear domain map (Fig. 1a-style bar with residue
    boundaries), domain/stem colors, labeled residues and nucleotide numbers.
-2. **Structure**: download `<pdb>.cif` into `dsh-mol-structure/public/structures/`;
+2. **Structure**: download `<pdb>.cif` into `dsh-mol-structure/dist/structures/`;
    parse chains (auth_asym_id, types, ranges) and verify against the paper's
    numbering (they can be offset — Cas12i's PAM dT(−2*) is auth 1–10).
 3. **Annotate**: use the `structure-lab` MCP tools (`cif_ss`, `region_centroids`)
    to get SS runs and label-anchor centroids. Generate
-   `public/structures/label-anchors-<paper>.json` via `tools/make_anchors.py`
+   `dist/structures/label-anchors-<paper>.json` via `tools/make_anchors.py`
    (add a PAPERS entry) or the `region_centroids` tool output.
 4. **Panels**: create `src/papers/<paper>.js` — each panel = `{ title, scene:
    { structureUrl, groups }, view: { yaw, pitch, zoom, roll, targetKey?, radius? },

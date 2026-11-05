@@ -17,7 +17,7 @@ install without the user's choice.
 1. Read the referenced paper (or fetch the PDB entry) to identify panels, PDB id,
    domain map, colors and labeled residues. The two already-reproduced papers
    (IscB 7XHT, Cas12i 6W5C) live in `src/papers/` as worked examples.
-2. Download the mmCIF into `dsh-mol-structure/public/structures/`, verify chains/numbering.
+2. Download the mmCIF into `dsh-mol-structure/dist/structures/`, verify chains/numbering.
 3. Generate label anchors (`tools/make_anchors.py` PAPERS entry or
    `structure-lab` MCP `region_centroids`).
 4. Write `src/papers/<paper>.js`, register in `src/config.js`, add UI groups in

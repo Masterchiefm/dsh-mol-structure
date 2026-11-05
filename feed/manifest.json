@@ -1,8 +1,8 @@
 {
   "version": "0.5.0",
   "base": "../",
-  "publishedAt": 1793858017822,
-  "notes": "自动检查更新 + 插件内自升级（GitHub 清单：SHA-256 校验、备份、热重载、失败回滚）；设置页新增更新行",
+  "publishedAt": 1793867327334,
+  "notes": "",
   "files": [
     {
       "path": "LICENSE",
@@ -11,8 +11,8 @@
     },
     {
       "path": "README.md",
-      "size": 7052,
-      "sha256": "62a2ad62767a5b621d112025f130635fc174e0a5f15ed16cd3aab245c98d66bd"
+      "size": 7050,
+      "sha256": "f17c905ed612cb1d11e1c1830227e41d5e9d5f0d6987345b283e7780f077b457"
     },
     {
       "path": "client.js",
@@ -206,8 +206,8 @@
     },
     {
       "path": "package.json",
-      "size": 1783,
-      "sha256": "ab0a07294a114edd1ef0b1e951f0f1dbbe16853876f53f5b943f9c92d29cb9c1"
+      "size": 1801,
+      "sha256": "6ef4e7f29be87335455b4b509223aa98d1e340233c98b4d75eb7a2addef1b4a1"
     },
     {
       "path": "src/bridge.js",
@@ -231,8 +231,8 @@
     },
     {
       "path": "src/labels.js",
-      "size": 12710,
-      "sha256": "8254654486e8dc78d3383faca23cfc95e05b7e5e462bc68e908837d73ea4accb"
+      "size": 12708,
+      "sha256": "a391b2153c586bb3864c191e377a6d20e63a851370bc8598e68801b240027b28"
     },
     {
       "path": "src/main.js",
