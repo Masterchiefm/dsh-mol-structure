@@ -1,0 +1,9 @@
+# dsh-mol-structure bundle patch.
+#
+# One insert row mounts the Host half; the browser half is attached by the
+# package.json `dsh.client` declaration and binds to this row because its
+# `name` is the bare package name (sub-path rows never carry a half).
+- insert:
+    - id: mol-structure
+      name: 'dsh-mol-structure'
+      config: {}

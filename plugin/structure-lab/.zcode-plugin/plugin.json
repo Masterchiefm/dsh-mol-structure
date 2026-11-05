@@ -1,0 +1,15 @@
+{
+  "name": "structure-lab",
+  "version": "0.2.0",
+  "description": "Structural biology analysis & display lab: mmCIF parsing, interface/contact maps, H-bond and pi-stacking detection, Kabsch superposition, label-anchor generation, plus a SOP-driven workflow for reproducing publication structure figures with a local Mol* viewer.",
+  "author": { "name": "dsh" },
+  "skills": "./skills",
+  "commands": "./commands",
+  "mcpServers": {
+    "structure-lab": {
+      "command": "python",
+      "args": ["-I", "${CLAUDE_PLUGIN_ROOT}/mcp/structure_server.py"],
+      "env": {}
+    }
+  }
+}

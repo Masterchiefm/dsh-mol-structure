@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>dsh-mol-structure · IscB–ωRNA–target DNA (PDB 7XHT)</title>
+    <link rel="stylesheet" href="./molstar.css" />
+    <style>html,body{height:100%;margin:0;padding:0;font-family:Segoe UI,system-ui,-apple-system,sans-serif;overflow:hidden}#app{position:absolute;inset:0}.control-card{z-index:10;color:#333;background:#fff;border:1px solid #d9d9d9;border-radius:8px;max-width:300px;max-height:calc(100% - 110px);padding:8px 12px 10px;font-size:12px;position:fixed;bottom:44px;right:12px;overflow:auto;box-shadow:0 2px 8px #0000001f}.control-card .card-head{justify-content:space-between;align-items:center;gap:8px;margin-bottom:2px;display:flex}.control-card .card-head h1{margin:0}#btn-card-close{font:inherit;color:#555;cursor:pointer;background:0 0;border:1px solid #80808059;border-radius:5px;flex:none;justify-content:center;align-items:center;width:20px;height:20px;padding:0;font-size:14px;line-height:1;display:flex}#btn-card-close:hover{color:#111;background:#f2f2f2}.control-card.collapsed{display:none}#btn-card-toggle{z-index:10;font:inherit;color:#333;cursor:pointer;background:#ffffffeb;border:1px solid #80808073;border-radius:6px;padding:3px 9px;font-size:12px;position:fixed;bottom:12px;right:12px;box-shadow:0 1px 4px #0000001f}#btn-card-toggle:hover{background:#e6f0ff}#btn-card-toggle.hidden{display:none}#custom-panel-group .btn-row button{background:#f0f6ff;border-color:#7aa7d9}.control-card h1{margin:0 0 4px;font-size:13px}.control-card .caption{color:#666;margin:2px 0 8px;line-height:1.4}.control-card .btn-row{flex-wrap:wrap;gap:6px;display:flex}.control-card .group-title{color:#888;border-bottom:1px solid #eee;margin:8px 0 4px;padding-bottom:2px;font-size:11px}.control-card .paper-title{color:#333;margin:10px 0 2px;font-size:12px;font-weight:700}.control-card button{font:inherit;cursor:pointer;background:#f5f5f5;border:1px solid #c4c4c4;border-radius:5px;padding:4px 8px}.control-card button:hover{background:#e6f0ff;border-color:#4a7ebb}.control-card button.active{color:#fff;background:#4a7ebb;border-color:#35618c}#status{color:#888;min-height:1em;margin-top:8px}</style>
+  <script type="module" crossorigin src="./assets/index-BLWPLF-T.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-XKyaHtl9.js">
+  <link rel="modulepreload" crossorigin href="./assets/string-builder-7dHJyZOl.js">
+  <link rel="modulepreload" crossorigin href="./assets/mol-util-D6gaI6EL.js">
+  <link rel="modulepreload" crossorigin href="./assets/mat4-Cxru9LfP.js">
+  <link rel="modulepreload" crossorigin href="./assets/utf8-BG1d2XFZ.js">
+  <link rel="modulepreload" crossorigin href="./assets/cif-CBMjnO4t.js">
+  <link rel="modulepreload" crossorigin href="./assets/param-definition-BU0O84n0.js">
+  <link rel="modulepreload" crossorigin href="./assets/matrix-CaU2DVkM.js">
+  <link rel="modulepreload" crossorigin href="./assets/structure-CU7Rxs1B.js">
+  <link rel="modulepreload" crossorigin href="./assets/mol-state-BLKVrNJM.js">
+</head>
+<body>
+    <div id="app"></div>
+    <button id="btn-card-toggle" title="显示 / 隐藏视图控制卡">☰ 视图</button>
+    <div class="control-card">
+        <div class="card-head">
+            <h1>结构视图控制</h1>
+            <button id="btn-card-close" title="关闭面板" aria-label="关闭面板">×</button>
+        </div>
+        <div class="group-title">视图</div>
+        <div class="btn-row" id="view-buttons"></div>
+        <div class="group-title">自定义视图（对话中可注册 / 修改）</div>
+        <div class="btn-row" id="custom-row">
+            <span style="color:#888">尚未注册 — 对话里说“注册一个视图”即可（mol_panel_define）</span>
+        </div>
+        <div class="group-title">自定义操作（对话中可注册 / 修改）</div>
+        <div class="btn-row" id="action-row">
+            <span style="color:#888">尚未注册 — 对话里说“注册一组操作按钮”即可</span>
+        </div>
+        <div id="paper-panels" hidden>
+            <div class="group-title">论文复现面板（内置示例）</div>
+            <div class="btn-row" data-figures="fig1b,fig1c,fig1cBack,fig2,fig3bA,fig3bB,fig3c,fig4a,fig4aBack,fig4c,fig4d,fig4e,c1ov,c1ovBack,c1d,c2a,c2d,c2f"></div>
+        </div>
+        <div class="btn-row" style="margin-top:8px">
+            <button id="btn-reload-view" title="重建当前视图并强制重绘（从后台切回后画面空白时用）">重载视图</button>
+            <button id="btn-mode" title="开启完整 Mol* 界面：左侧控制树、序列、截图/动画工具栏">完整 Mol*</button>
+            <button id="btn-labels" title="显示 / 隐藏全部标注（引线标签）">标签：开</button>
+            <button id="btn-pick-center" title="点击任意残基，把视角中心移到它（保持当前缩放）；也可直接 Shift+点击">点击定中心</button>
+            <button id="btn-center-structure" title="把视角中心移回整个结构的中心">回到结构中心</button>
+            <button id="btn-rotate" title="Rotate camera around the vertical axis by 45°">Rotate 45°</button>
+            <button id="btn-export" title="Download a 4× PNG of the current viewport (canvas only)">Export PNG ×4</button>
+        </div>
+        <div id="status">loading…</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "name": "dsh-mol-structure",
+  "version": "0.4.0",
+  "type": "module",
+  "description": "结构生物学插件：在 dsh 右侧边栏内嵌 Mol* v5 结构查看器（内置 IscB 7XHT / Cas12i 6W5C 论文复现面板，可隐藏），agent 可通过 mol_* 工具加载结构、按需渲染、标注与测量，实时感知用户点选，并能注册自定义视图与操作按钮；HTTP /command 接口对任意本地程序开放同一套控制词汇；支持简洁/完整 Mol* 双模式与状态快照、mmCIF 导出。",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "host/",
+    "src/",
+    "public/",
+    "dist/",
+    "index.html",
+    "vite.config.js",
+    "icon.svg",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "molstar",
+    "structural-biology",
+    "structure-viewer"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "capture": "node tools/capture-panels.mjs",
+    "check": "node --check index.js && node --check client.js && node --check host/trust.js && node --check host/push.js && node --check host/state.js && node --check host/static.js && node --check host/tools.js && node --check host/reload.js && node scripts/host-smoke.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "molstar": "^5.13.1",
+    "playwright": "^1.64.1",
+    "vite": "^8.3.5"
+  }
+}

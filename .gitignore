@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# build caches / logs
+*.log
+.vite/
+*.tgz
+
+# paper PDFs & cropped figures — copyrighted, personal study only, never publish
+reference/
+
+# calibration history screenshots (authoritative captures live in final/ cas9/ cas12/)
+docs/screenshots/iterations/
+
+# python byte-code (plugin/ mcp helper)
+__pycache__/
+*.pyc
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/

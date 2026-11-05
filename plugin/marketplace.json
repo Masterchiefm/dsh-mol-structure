@@ -1,0 +1,16 @@
+{
+  "name": "dev-structure-lab",
+  "owner": { "name": "dsh" },
+  "plugins": [
+    {
+      "name": "structure-lab",
+      "source": "./structure-lab",
+      "version": "0.2.0",
+      "description": "Structural biology analysis & display lab: mmCIF parsing, interface maps, H-bond/stacking detection, superposition, and SOP-driven reproduction of publication structure figures with a local Mol* viewer.",
+      "displayName": "结构生物学分析",
+      "displayName_i18n": { "zh-CN": "结构生物学分析" },
+      "description_i18n": { "zh-CN": "结构生物学分析与展示工具集：mmCIF 解析、蛋白–核酸界面映射、氢键/堆积检测、叠合比较，以及基于本地 Mol* 视图的论文结构图复现工作流。" },
+      "category": "developer-tools"
+    }
+  ]
+}
