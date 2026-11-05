@@ -123,6 +123,21 @@ try {
     })
     await sleep(2000)
 
+    // open the CURRENT session so the left pane shows the agent conversation
+    await page.evaluate(() => {
+        const el = [...document.querySelectorAll('button,[role="button"],a,div,span')]
+            .find(e => (e.textContent || '').trim().startsWith('重构README并制作新互作示例'))
+        if (el) el.click()
+    })
+    await sleep(8000)
+    // scroll the conversation to the latest agent output
+    await page.evaluate(() => {
+        const scrollers = [...document.querySelectorAll('*')].filter(e =>
+            e.scrollHeight > e.clientHeight + 200 && e.clientHeight > 300)
+        for (const s of scrollers) s.scrollTop = s.scrollHeight
+    })
+    await sleep(2000)
+
     // already open from a previous run? then just reuse the viewer iframe
     const iframeReady = await page.evaluate(() => {
         const f = [...document.querySelectorAll('iframe')]
@@ -131,14 +146,14 @@ try {
             && (f.contentDocument.getElementById('status')?.textContent || '').includes('ready')
     })
     if (!iframeReady) {
-        // open the right sidebar (top-right pane toggle), then the 结构视图 tab
+        // open the right sidebar via its explicit toggle, then the 结构视图 tab
         await page.evaluate(() => {
             const els = [...document.querySelectorAll('button,[role="button"]')]
-            const toggle = els.find(e => {
-                const r = e.getBoundingClientRect()
-                return r.width > 0 && r.left > window.innerWidth - 120 && r.top < 80
-            })
-            if (toggle) toggle.click()
+            const label = (e) => (e.getAttribute('aria-label') || e.title || '')
+            const open = els.find(e => label(e).includes('打开右侧边栏'))
+            if (open) { open.click(); return }
+            const anyClosed = els.find(e => label(e).includes('右侧边栏'))
+            if (anyClosed) anyClosed.click()
         })
         await sleep(2500)
         const clicked = await page.evaluate(() => {

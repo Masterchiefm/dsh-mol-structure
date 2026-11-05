@@ -62,7 +62,11 @@ Do **not** add an entry to the profile `cordis.patch.yml` — the bundle's own
 2. 对 agent 说「加载 4oo8」→ `mol_load` 返回链清单并自动注册总览/界面视图；
 3. 在 3D 视图点击残基 → agent 用 `mol_status` 能读到该次点击。
 
-> 纯 web profile（`dsh web`）安装：`dsh plugin --profile web add C:\path\to\dsh-mol-structure`。
+> 纯 web profile（`dsh web`）源码安装（复制即可用）：
+>
+> ```bash
+> dsh plugin --profile web add github:Masterchiefm/dsh-mol-structure
+> ```
 
 ## 3. 示例案例：SaCas9–sgRNA–目标 DNA（PDB 4OO8）
 
