@@ -34,14 +34,11 @@
 
 ## 2. 安装
 
-前置：无需构建——`dist/` 已随仓库提交，克隆即可安装。只有在改 `src/`
-重新开发时才需要 Node ≥ 20。
-
 ### 方式 A · 让 dsh 里的 agent 安装（推荐）
 
-把仓库克隆到本地任意目录，然后在任一已打开的 dsh 会话里直接对 agent 说：
+在任一已打开的 dsh 会话里直接对 agent 说：
 
-> 请安装插件 `C:\path\to\dsh-mol-structure`
+> 请安装插件 `https://github.com/Masterchiefm/dsh-mol-structure`
 
 agent 会调用 `plugin_manager`（`install_bundle`，target = 仓库目录的**绝对路径**，
 真实目录、不要符号链接）——自动完成 profile 依赖登记、`cordis.patch.yml` 挂载与
