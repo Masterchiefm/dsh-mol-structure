@@ -34,10 +34,11 @@ import { createStatic } from './host/static.js'
 import { createPanels } from './host/panels.js'
 import { createTools, VIEWER_COMMAND_OPS } from './host/tools.js'
 import { isReloading, selfReload, watchPackage } from './host/reload.js'
+import { PluginUpdater } from './host/updater.js'
 import { FIGURES } from './src/config.js'
 
 export const name = 'mol-structure'
-export const version = '0.4.0'
+export const version = '0.5.0'
 
 /** The composition must serve HTTP; everything else is optional below. */
 export const inject = ['webServer']
@@ -112,13 +113,16 @@ export function apply(ctx, config) {
     const exportsDir = path.join(settingsDir, 'exports')
     const CONTROL_CARD_MODES = new Set(['auto', 'show', 'hide'])
     const VIEWER_MODES = new Set(['simple', 'full'])
-    let userSettings = { controlCard: 'auto', defaultMode: 'simple', pixelScale: 1.5 }
+    let userSettings = { controlCard: 'auto', defaultMode: 'simple', pixelScale: 1.5, updateCheckHours: 6 }
     try {
         const raw = JSON.parse(fs.readFileSync(settingsFile, 'utf8'))
         if (CONTROL_CARD_MODES.has(raw?.controlCard)) userSettings.controlCard = raw.controlCard
         if (VIEWER_MODES.has(raw?.defaultMode)) userSettings.defaultMode = raw.defaultMode
         const ps = Number(raw?.pixelScale)
         if (Number.isFinite(ps) && ps >= 0.5 && ps <= 3) userSettings.pixelScale = ps
+        const uch = Number(raw?.updateCheckHours)
+        if (Number.isFinite(uch) && uch >= 0 && uch <= 168) userSettings.updateCheckHours = Math.trunc(uch)
+        if (typeof raw?.updateNotifiedFor === 'string') userSettings.updateNotifiedFor = raw.updateNotifiedFor
     } catch { /* first run or unreadable — defaults */ }
 
     function controlCardMode() {
@@ -171,6 +175,7 @@ export function apply(ctx, config) {
             controlCard: userSettings.controlCard,
             defaultMode: userSettings.defaultMode,
             pixelScale: userSettings.pixelScale,
+            updateCheckHours: userSettings.updateCheckHours,
             effective: { controlCard: controlCardMode(), defaultMode: defaultViewerMode(), pixelScale: viewerPixelScale() },
             overridden: {
                 controlCard: config?.controlCard === 'show' || config?.controlCard === 'hide',
@@ -178,6 +183,103 @@ export function apply(ctx, config) {
             },
             version,
         }
+    }
+
+    // --- in-app self-update ---------------------------------------------------
+    // Checks the GitHub release manifest on a timer (updateCheckHours, default
+    // 6; 0 disables), notifies open viewers once per new version over SSE, and
+    // applies releases as download → verify → backup → swap → hot reload with
+    // full rollback (see host/updater.js).
+    const updater = new PluginUpdater({
+        pkgDir: packageDir,
+        dataDir: settingsDir,
+        settings: () => userSettings,
+        log: message => logger.info?.(message),
+        runningVersion: version,
+    })
+    let updateCheckTimer = undefined
+    let disposed = false
+
+    /** Push an `update` event once per version (manual checks force a re-push). */
+    function pushUpdate(force = false) {
+        if (disposed) return
+        const status = updater.status()
+        if (status.available !== true || status.latest === '') return
+        if (!force && status.latest === userSettings.updateNotifiedFor) return
+        userSettings.updateNotifiedFor = status.latest
+        try {
+            fs.mkdirSync(settingsDir, { recursive: true })
+            fs.writeFileSync(settingsFile, `${JSON.stringify(userSettings, null, 2)}\n`, 'utf8')
+        } catch (error) {
+            logger.warn?.(`mol-structure: could not persist update notification mark (${error?.message ?? error})`)
+        }
+        push.emit('update', { current: status.current, latest: status.latest, notes: status.notes })
+    }
+
+    function updateCheckDue() {
+        const hours = userSettings.updateCheckHours
+        if (!(Number.isFinite(hours) && hours > 0)) return false
+        return Date.now() - updater.checkedAt >= hours * 3600_000
+    }
+
+    function scheduleUpdateCheck() {
+        if (updateCheckTimer !== undefined) { clearInterval(updateCheckTimer); updateCheckTimer = undefined }
+        if (!(Number.isFinite(userSettings.updateCheckHours) && userSettings.updateCheckHours > 0)) return
+        // Hourly tick; the actual check fires only when the interval is due, so
+        // a process that lives shorter than the interval simply checks once.
+        updateCheckTimer = setInterval(() => {
+            if (updateCheckDue()) void updater.check().then(() => pushUpdate(false)).catch(() => {})
+        }, 3600_000)
+        updateCheckTimer.unref?.()
+    }
+
+    ctx.effect(() => () => {
+        disposed = true
+        if (updateCheckTimer !== undefined) clearInterval(updateCheckTimer)
+    }, 'mol-structure: update check timer')
+
+    // First check happens shortly after mount so an open settings page sees
+    // the banner without waiting for the first hourly tick. `updateCheck:
+    // false` in the bundle config disables the timer entirely (tests, air-gapped setups).
+    if (config?.updateCheck !== false) {
+        setTimeout(() => {
+            if (updateCheckDue()) void updater.check().then(() => pushUpdate(false)).catch(() => {})
+        }, 15_000).unref?.()
+        scheduleUpdateCheck()
+    }
+
+    /** The successor generation registers this notification callback: only the
+     *  caller that confirmed selfReload may announce the completed upgrade. */
+    const pendingKey = Symbol.for('mol-structure.pending-upgrade')
+    const pendingUpgrade = globalThis[pendingKey]
+    if (pendingUpgrade?.version === version) {
+        pendingUpgrade.notify = () => {
+            if (disposed) return
+            push.emit('upgraded', { version })
+        }
+    }
+
+    async function applyUpgrade(requestedVersion) {
+        if (isReloading()) throw new Error('a reload is already in progress')
+        let pending
+        try {
+            const result = await updater.apply({
+                version: requestedVersion,
+                activate: async installed => {
+                    pending = { version: installed.version }
+                    globalThis[pendingKey] = pending
+                    return selfReload(ctx, { logger, expectedVersion: installed.version })
+                },
+            })
+            try { pending?.notify?.() } catch (error) { logger.warn?.(`mol-structure: upgrade notification failed (${error?.message ?? error})`) }
+            return { ...result, reloaded: true }
+        } finally {
+            if (globalThis[pendingKey] === pending) globalThis[pendingKey] = undefined
+        }
+    }
+
+    function updateStatusPayload() {
+        return { ...updater.status(), notifiedFor: userSettings.updateNotifiedFor, checkHours: userSettings.updateCheckHours, repo: 'Masterchiefm/dsh-mol-structure' }
     }
 
     async function writeSettings(patch) {
@@ -193,6 +295,12 @@ export function apply(ctx, config) {
             const n = Number(patch.pixelScale)
             if (!Number.isFinite(n) || n < 0.5 || n > 3) throw new Error('pixelScale must be a number in [0.5, 3]')
             userSettings.pixelScale = n
+        }
+        if (patch?.updateCheckHours !== undefined) {
+            const n = Number(patch.updateCheckHours)
+            if (!Number.isFinite(n) || n < 0 || n > 168) throw new Error('updateCheckHours must be a number in [0, 168] (0 = off)')
+            userSettings.updateCheckHours = Math.trunc(n)
+            scheduleUpdateCheck()
         }
         await fsp.mkdir(settingsDir, { recursive: true })
         await fsp.writeFile(settingsFile, `${JSON.stringify(userSettings, null, 2)}\n`, 'utf8')
@@ -388,7 +496,26 @@ export function apply(ctx, config) {
             const result = unwrap(await state.submitCommand({ op: forward, args: forwardArgs, timeoutMs: numberOr(args?.timeoutMs, commandTimeoutMs) }))
             return json(res, 200, { ok: true, result })
         }
+        if (req.method === 'GET' && pathname === '/api/mol-structure/update') {
+            return json(res, 200, updateStatusPayload())
+        }
+        if (req.method === 'POST' && pathname === '/api/mol-structure/update/check') {
+            const outcome = await updater.check()
+            pushUpdate(true)
+            return json(res, 200, { ok: true, ...outcome, status: updateStatusPayload() })
+        }
+        if (req.method === 'POST' && pathname === '/api/mol-structure/update/apply') {
+            const body = await readJsonBody(req, 1e6)
+            const requested = typeof body?.version === 'string' && body.version.trim() !== '' ? body.version.trim() : undefined
+            const result = await applyUpgrade(requested)
+            return json(res, 200, { ok: true, result })
+        }
         if (req.method === 'POST' && pathname === '/api/mol-structure/reload') {
+            const status = updater.status()
+            if (status.applying) return json(res, 409, { error: 'an upgrade is already running' })
+            if (status.recoveryRequired) {
+                return json(res, 409, { error: `restore the retained upgrade backup before reloading (${status.recoveryBackup})` })
+            }
             json(res, 200, { ok: true, note: 'hot reload started; connections will reset once the new generation is live' })
             triggerReload('api')
             return

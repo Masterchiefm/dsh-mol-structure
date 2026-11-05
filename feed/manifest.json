@@ -1,0 +1,258 @@
+{
+  "version": "0.5.0",
+  "base": "../",
+  "publishedAt": 1793858017822,
+  "notes": "自动检查更新 + 插件内自升级（GitHub 清单：SHA-256 校验、备份、热重载、失败回滚）；设置页新增更新行",
+  "files": [
+    {
+      "path": "LICENSE",
+      "size": 1087,
+      "sha256": "64f7faf988521ebfcad269d5008c9db53176066257b938d29e82b7efe82b0251"
+    },
+    {
+      "path": "README.md",
+      "size": 7052,
+      "sha256": "62a2ad62767a5b621d112025f130635fc174e0a5f15ed16cd3aab245c98d66bd"
+    },
+    {
+      "path": "client.js",
+      "size": 25496,
+      "sha256": "38a94fb183f0957fc86c38c503577f2ed96126b55f8c4972cc031fb7e29ab88e"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "size": 338,
+      "sha256": "992d07f9c5e5d76da8fd23fe37c728a3d2e25ea769f88cce8ff8b05cd42981f9"
+    },
+    {
+      "path": "dist/assets/cells-D9Q81GMa.jpg",
+      "size": 185455,
+      "sha256": "575386d2f4abae16edd181c42d9936abb15d872c764ce5b412a68a0d53fab481"
+    },
+    {
+      "path": "dist/assets/cif-CBMjnO4t.js",
+      "size": 74451,
+      "sha256": "8f53e521f6206aadfbd44e5290c0313eddb129460e1aa5bbcba6a39ce69686fe"
+    },
+    {
+      "path": "dist/assets/index-VxYSt1Oc.js",
+      "size": 4571133,
+      "sha256": "21dabef757f2d3d8a8876460efd45c4860699e750eff9f6af79e672cc7debdb3"
+    },
+    {
+      "path": "dist/assets/mat4-Cxru9LfP.js",
+      "size": 34990,
+      "sha256": "1d793f04c120e7e2c0cea277a02c5ce8124d2025b8c0a7b00cf421b4d5da68d5"
+    },
+    {
+      "path": "dist/assets/matrix-CaU2DVkM.js",
+      "size": 1382,
+      "sha256": "3b0d1a7b710351b514fd9aa51a3386d18035a0cefc6f86c499bea2f69250cf7c"
+    },
+    {
+      "path": "dist/assets/mol-state-BLKVrNJM.js",
+      "size": 143975,
+      "sha256": "f324c8fa9aaa51878542f3de9229737818b041bb258c73c1a0637394f583bb50"
+    },
+    {
+      "path": "dist/assets/mol-util-D6gaI6EL.js",
+      "size": 5589,
+      "sha256": "b5f3a892f01f59c92d33d32ff9c8cc5632a30c1173a38a7a5022048dbc5a69e2"
+    },
+    {
+      "path": "dist/assets/nebula_back6-DGSZ_tzT.jpg",
+      "size": 59432,
+      "sha256": "1c9d8615b96770a7853eb646c94b0f9858570b0ddb664bde8a7590ca3d312c65"
+    },
+    {
+      "path": "dist/assets/nebula_bottom4-DgUpJxjp.jpg",
+      "size": 74470,
+      "sha256": "dc41e3a004b9e9410effbee56f83295d949fd51bf58594fcee2f601cdafe2e98"
+    },
+    {
+      "path": "dist/assets/nebula_front5-CWqbzonZ.jpg",
+      "size": 72077,
+      "sha256": "9dcb306b05a4adf5fa31729a33583fd0a8434ab61d2da534bab01a444f7b8031"
+    },
+    {
+      "path": "dist/assets/nebula_left2-Da3VdN9a.jpg",
+      "size": 56638,
+      "sha256": "161cd55c3753113f96c2950bd338718dd59068968c765106b57694cb1c3d7fb9"
+    },
+    {
+      "path": "dist/assets/nebula_right1-BWVtsnot.jpg",
+      "size": 80909,
+      "sha256": "6dbcc60c997c1d7fc690a6a727def09861ae2fde5c914d7bf1409aadf9979c70"
+    },
+    {
+      "path": "dist/assets/nebula_top3-CfldhfdM.jpg",
+      "size": 91432,
+      "sha256": "0bc77993029148f0691b81d1841a9f603f81251a665aa7a11b988418c9017a28"
+    },
+    {
+      "path": "dist/assets/param-definition-BU0O84n0.js",
+      "size": 70579,
+      "sha256": "ddfd9229c8c23a67f8f3e46c1a2d1d0abf78f2bcc4afa0161495c34a8ca6758d"
+    },
+    {
+      "path": "dist/assets/rolldown-runtime-XKyaHtl9.js",
+      "size": 726,
+      "sha256": "548d1dbf321e7d2ae804fcc158b588706a7c52f8ca175de1490c6ccb4dbe55b7"
+    },
+    {
+      "path": "dist/assets/string-builder-7dHJyZOl.js",
+      "size": 1911,
+      "sha256": "4131f29e7494b7369c99ac29949cc7cb488c9b2864b3317dd23d727df4c5f99c"
+    },
+    {
+      "path": "dist/assets/structure-CU7Rxs1B.js",
+      "size": 463881,
+      "sha256": "9a20c64714b4bb78b2fc811bac98cb26c19fff8fd6c95db50265548e8f024968"
+    },
+    {
+      "path": "dist/assets/utf8-BG1d2XFZ.js",
+      "size": 11756,
+      "sha256": "743dc069579c93f5e550603b061707e69f421979d13f9faeae417831b148926f"
+    },
+    {
+      "path": "dist/index.html",
+      "size": 5487,
+      "sha256": "1f5ac47990caab052a8fabf2000e54844814df2f8c5dfa1e7472b1a29253a1c1"
+    },
+    {
+      "path": "dist/molstar.css",
+      "size": 72904,
+      "sha256": "22fbf73b75c11ef57687d08437c95dbfe8430ea895264f6da2b9b01e28bacc49"
+    },
+    {
+      "path": "dist/structures/4oo8.cif",
+      "size": 4913365,
+      "sha256": "147dd18bc06e97de52896862ffd69f3db7b4aa060d0a9a084f06d078a9ece511"
+    },
+    {
+      "path": "dist/structures/4un3.cif",
+      "size": 2769280,
+      "sha256": "9587f53dbe81f6789d8dbc3afa32c5689c374610ebbf8cc338fc34e31d402f25"
+    },
+    {
+      "path": "dist/structures/6w5c.cif",
+      "size": 1150896,
+      "sha256": "8d4c19d0af7172512e8932685160c7a7c1082424be374e82adfd556f50e257b4"
+    },
+    {
+      "path": "dist/structures/7xht.cif",
+      "size": 923834,
+      "sha256": "59dfdf47af06ffc43a54b8e21c03d8946a45d0f26b801ca9a45ffe99ce3d9098"
+    },
+    {
+      "path": "dist/structures/label-anchors-cas12i.json",
+      "size": 2854,
+      "sha256": "f16a705afea0a1bd879ac974c45bb89cf31a9a72becef35c90e4a0a84440ce7f"
+    },
+    {
+      "path": "dist/structures/label-anchors-iscb.json",
+      "size": 7577,
+      "sha256": "d4aa3d4d9ae78028f30775d8b7fb8a411fbb3278c436f0ead1df8ac406f01750"
+    },
+    {
+      "path": "host/panels.js",
+      "size": 8385,
+      "sha256": "763d8d4353bc278a9f5f9eee7cbc13f4f2a5f1ba8b72c3d373fbdca3b7e94e15"
+    },
+    {
+      "path": "host/push.js",
+      "size": 1913,
+      "sha256": "a151e896dc534d422d4ca358327b7a47c4839e539f2b3112b027ecce3c3a822e"
+    },
+    {
+      "path": "host/reload.js",
+      "size": 12613,
+      "sha256": "7636fe87418b6870c9df7c7a94c896ab3fcea7b202e626b20ef0df509c3343e9"
+    },
+    {
+      "path": "host/state.js",
+      "size": 4563,
+      "sha256": "85157bee497363280ca95405a3aab65f5b60e27e38c21717561fb90d725aa124"
+    },
+    {
+      "path": "host/static.js",
+      "size": 3234,
+      "sha256": "d4e4696c50df3665f8446aadd5e22bf51946db142b664a0b57749d34d8a7640d"
+    },
+    {
+      "path": "host/tools.js",
+      "size": 53902,
+      "sha256": "88eeb44e8edeee54ad8d1b60c583a8308a38e0df4331bed49d421c142301f4f1"
+    },
+    {
+      "path": "host/trust.js",
+      "size": 5827,
+      "sha256": "02da3e62a88a64846ca6a0696480077448efa28e1e91364459c3db19298f9fe9"
+    },
+    {
+      "path": "host/updater.js",
+      "size": 37986,
+      "sha256": "77f64928ee36d2768708fb9e826ed84634b6e7178f3a4a211ebc87b67898f67c"
+    },
+    {
+      "path": "icon.svg",
+      "size": 377,
+      "sha256": "30ebd5ad02775f126f461c5ff72465373eb7dde70df69244085499e810bab56b"
+    },
+    {
+      "path": "index.js",
+      "size": 27340,
+      "sha256": "f158d33e27155f7c3e44438a098c838a6ce4134ac98e3a648b1d6d159754d21b"
+    },
+    {
+      "path": "package.json",
+      "size": 1783,
+      "sha256": "ab0a07294a114edd1ef0b1e951f0f1dbbe16853876f53f5b943f9c92d29cb9c1"
+    },
+    {
+      "path": "src/bridge.js",
+      "size": 7426,
+      "sha256": "21b5f762a2a0d0e536f3e0c908cfce4ee642240e1644c32e6fc9cf2f081800e5"
+    },
+    {
+      "path": "src/commands.js",
+      "size": 47445,
+      "sha256": "f5c640d4c135d5fe264ad76ac2c19fce4d6a63c217f564b1480e85f1508e35c7"
+    },
+    {
+      "path": "src/config.js",
+      "size": 704,
+      "sha256": "30d1b1e0698046012165f9376939afd3c03a5a9746a9a3ee06ff896264b5426e"
+    },
+    {
+      "path": "src/helpers.js",
+      "size": 1086,
+      "sha256": "448a818cb0bdbdedad48122db69d15481273f8fb760cbe68fc0d7f11ce0c1eb5"
+    },
+    {
+      "path": "src/labels.js",
+      "size": 12710,
+      "sha256": "8254654486e8dc78d3383faca23cfc95e05b7e5e462bc68e908837d73ea4accb"
+    },
+    {
+      "path": "src/main.js",
+      "size": 39685,
+      "sha256": "8e49016b56cee828b456a1bafd87a41854ac8d9e0b1c57134ec7b41c4ecbf12e"
+    },
+    {
+      "path": "src/papers/cas12i.js",
+      "size": 8800,
+      "sha256": "7686101294d072e08b6a0e8b487d30dc211eed417a5d4cbd2188e62c96c62e54"
+    },
+    {
+      "path": "src/papers/iscb.js",
+      "size": 15867,
+      "sha256": "b5e7e8232d7f7ff07a2a03aa9247b080eefb1df67e71299055fb74a9cc17b5ab"
+    },
+    {
+      "path": "src/scenes.js",
+      "size": 7073,
+      "sha256": "f4c717c0d2b3b0867e2d611fe3ed688a81d0962a5831d65cd824736bf9baac2d"
+    }
+  ]
+}

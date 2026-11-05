@@ -47,7 +47,8 @@ dsh-mol-structure/
 │   ├── state.js               ← viewer 真相（liveness/selection）+ 命令配对（submit/resolve/超时）
 │   ├── static.js              ← dist/ 静态服务（etag、防穿越、no-cache）
 │   ├── tools.js               ← 22 个 mol_* 工具定义 + 结构文件缓存（load token）+ op 白名单
-│   └── reload.js              ← 自热重载（loadCache 清除/重注册/回滚）+ 目录监视
+│   ├── reload.js              ← 自热重载（loadCache 清除/重注册/回滚）+ 目录监视
+│   └── updater.js             ← 插件内自升级（GitHub 清单 SHA-256 校验/备份/换文件/回滚）
 ├── src/
 │   ├── main.js                ← bootstrap、面板切换、相机、H-bond 线、选择上报、bridge 安装
 │   ├── bridge.js              ← 与宿主的桥：SSE 命令下行，status/selection/result 上行
@@ -175,6 +176,30 @@ dsh-mol-structure/
 
 **加一篇新论文的完整步骤**（实测：Cas12i 用了约半天）：SOP.md §8.0。
 改 config 的论文模块后必须同步 AGENTS.md/SOP.md 对应表。
+
+## v0.5 — 检查更新 + 插件内自升级（2026-11，参考 dsh-our-free-model 的 updater）
+
+- **更新通道**：`host/updater.js`（PluginUpdater）。更新源固定为
+  `Masterchiefm/dsh-mol-structure` 的 `feed/manifest.json`
+  （raw main/master + jsDelivr 镜像；可变 ref 先经 GitHub API 钉到完整 commit SHA，
+  防止镜像间快照漂移）。清单列全部发布文件（path/size/sha256，≤200 文件、单文件 ≤12MB，
+  dist 大包按此放宽）。**无签名验证**（2026-11-05 按用户要求移除）：信任锚是清单内的
+  SHA-256 pin + 固定 https 源；`stableStringify` 仅为工具保留。publishedAt 用 ms 数字。
+- **升级事务**：download → 校验 → stage → backupPackage（$DSH_HOME/mol-structure/rollback）
+  → 原子换文件（`*.dms-new` 同卷 rename + Windows EPERM 重试）→ verifyInstalled →
+  activate（selfReload + expectedVersion）→ 失败自动回滚并把 recovery 状态落盘
+  （upgrade-state.json + updates.json 历史）；recoveryRequired 时 /reload 会被 409 拒绝。
+- **接线**（index.js）：settings `updateCheckHours`（默认 6，0=关；bundle config
+  `updateCheck: false` 整体停用，测试用）+ `updateNotifiedFor`（每版本只提醒一次）；
+  启动 15s 后首查 + 每小时 tick 判到期；SSE 推 `update` / `upgraded` 事件
+  （`mol-structure.pending-upgrade` symbol 让后继代际发完成通知）。
+  路由：`GET /update`（状态）、`POST /update/check`、`POST /update/apply`。
+- **浏览器半身**（client.js）：设置行新增「自动检查更新」分段（6h/每天/每周/关闭）+
+  「检查更新」按钮 + 有新版本时的更新横幅（「立即更新并重载」带确认）。
+- **发版**：改码 → bump package.json + index.js version → `npm run build`（改 src/ 时）
+  → `npm run manifest`（= `node tools/build-manifest.mjs`，无签名）→ 提交推送
+  （含 `feed/manifest.json`）。
+  `npm run check` 里的 updater-smoke 会校验 feed/manifest.json 与工作副本一致。
 
 ## 已复现面板
 
@@ -421,5 +446,7 @@ roll 绕视轴的屏幕旋转、zoom>1 拉近；`targetKey`+`radius` 用于 clos
 - `Export PNG ×4` 与 `mol_screenshot` 只导出 WebGL 画面（无 HTML 标签）；
   带标签成图用 `npm run capture` 的 `-page.png` 或整页截图。
   `docs/screenshots/final/` 是权威存档（每面板 page+canvas 两版），
-  `iterations/` 是校准历史，勿作对照基准。
-- 提交信息用英文祈使句；本仓库尚未 git 初始化（如需请先 `git init`）。
+  `iterations/` 是校准历史，勿作对照基准。**截图仅存本地不入 git**（~220MB）：
+  .gitignore 挡掉整个 `docs/screenshots/`，只保留 README 引用的 `readme/`
+  三张；换机器时用 `npm run capture` 重新生成。
+- 提交信息用英文祈使句；远端为 `Masterchiefm/dsh-mol-structure`（GitHub）。

@@ -55,7 +55,7 @@ function makeCtx() {
     }
 }
 
-apply(makeCtx(), {})
+apply(makeCtx(), { updateCheck: false })
 
 let failures = 0
 function check(label, ok, detail) {

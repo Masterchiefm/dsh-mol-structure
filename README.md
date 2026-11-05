@@ -2,9 +2,9 @@
 
 **GitHub**: <https://github.com/Masterchiefm/dsh-mol-structure> · License: MIT
 
-一个 **DeepSeek Harness (dsh) 插件**：在 dsh 右侧边栏内嵌本地 [Mol\*](https://molstar.org) v5
-结构查看器，并注册一组 `mol_*` agent 工具，让你在对话里直接加载、渲染、标注和分析
-分子结构（PDB/mmCIF 等），用户在 3D 视图里的点选也会回报给会话。
+一个让 **DeepSeek Harness (dsh)** 能够进行结构生物学信息分析、展示的插件：在 dsh 右侧
+边栏内嵌本地 [Mol\*](https://molstar.org) v5 结构查看器，让你在对话里直接加载、渲染、
+标注和分析分子结构（PDB/mmCIF 等），AI 可以将结构生物学分析的图像直接展示给你。
 
 ## 1. 这个插件能干什么
 
@@ -67,6 +67,27 @@ Do **not** add an entry to the profile `cordis.patch.yml` — the bundle's own
 > ```bash
 > dsh plugin --profile web add github:Masterchiefm/dsh-mol-structure
 > ```
+
+### 检查更新与插件内自升级（v0.5.0 起）
+
+插件自带更新通道，默认**开启自动检测**（每 6 小时，可在 设置 → General →
+「结构视图：自动检查更新」改为 每天/每周/关闭）。发现新版本时：
+
+- 已打开的设置页会显示更新横幅，SSE 会向浏览器半身推送一次 `update` 提醒；
+- 点「检查更新」立即查询；点「立即更新并重载」一键完成
+  下载 → SHA-256 校验 → 备份 → 原子换文件 → 热重载（失败自动回滚）；
+- 也可以直接调 HTTP 接口：
+  `GET /api/mol-structure/update`（状态）、
+  `POST /api/mol-structure/update/check`、
+  `POST /api/mol-structure/update/apply`。
+
+更新源固定为 GitHub 仓库 `Masterchiefm/dsh-mol-structure` 的
+`feed/manifest.json`（raw.githubusercontent.com + jsDelivr 镜像，可变分支先钉到
+完整 commit SHA）。清单里每个文件带 size + SHA-256，下载后逐一校验，任何一个字节
+不符即拒绝安装并回滚。发新版流程：改代码 → bump `package.json` 与 `index.js`
+的版本 → `npm run build`（改了 src/ 时）→ `npm run manifest` → 提交并推送
+（含 `feed/manifest.json`）。
+
 
 ## 3. 示例案例：SaCas9–sgRNA–目标 DNA（PDB 4OO8）
 

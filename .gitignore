@@ -6,11 +6,13 @@ node_modules/
 .vite/
 *.tgz
 
-# paper PDFs & cropped figures â€” copyrighted, personal study only, never publish
+# paper PDFs & cropped figures â€?copyrighted, personal study only, never publish
 reference/
 
-# calibration history screenshots (authoritative captures live in final/ cas9/ cas12/)
-docs/screenshots/iterations/
+# screenshots are a local working archive (~220MB) ¡ª git only carries the
+# few shots embedded in README (docs/screenshots/readme/)
+docs/screenshots/*
+!docs/screenshots/readme/
 
 # python byte-code (plugin/ mcp helper)
 __pycache__/
@@ -22,3 +24,4 @@ Thumbs.db
 desktop.ini
 .idea/
 .vscode/
+

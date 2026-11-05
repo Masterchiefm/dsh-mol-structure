@@ -91,7 +91,10 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
 
     var controlCardStore = createSnapshotStore('auto');
     var defaultModeStore = createSnapshotStore('simple');
+    var updateCheckHoursStore = createSnapshotStore(6);
+    var updateStatusStore = createSnapshotStore(null);
     var MODE_KEYS = ['simple', 'full'];
+    var UPDATE_HOURS_KEYS = [6, 24, 168, 0]; // 6h / daily / weekly / off
 
     function SegGroup(props) {
         var value = props.value;
@@ -152,6 +155,10 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
                     labels: { simple: t('settings.mode.simple'), full: t('settings.mode.full') },
                 }),
             ),
+            createElement(UpdateSection, {
+                t: t,
+                setUpdateCheckHours: props.setUpdateCheckHours,
+            }),
         );
     }
 
@@ -161,6 +168,84 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(patch),
         }).then(function (r) { return r.json(); });
+    }
+
+    // --- update status UI ------------------------------------------------------
+    function refreshUpdateStatus() {
+        return fetch(absoluteUrl(API_BASE + '/update'))
+            .then(function (r) { return r.json(); })
+            .then(function (j) { updateStatusStore.set(j); })
+            .catch(function () { /* host unreachable */ });
+    }
+
+    function UpdateSection(props) {
+        var t = props.t;
+        var hours = useStoreValue(updateCheckHoursStore);
+        var status = useStoreValue(updateStatusStore);
+        var busy = useState(false);
+        var setBusy = busy[1];
+        var row = { display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', fontSize: 13 };
+        var textWrap = { flex: 1, minWidth: 0 };
+        var title = { fontWeight: 600, marginBottom: 2 };
+        var desc = { opacity: 0.65, fontSize: 12 };
+        var banner = {
+            margin: '2px 0 6px', padding: '8px 12px', fontSize: 12, borderRadius: 6,
+            border: '1px solid rgba(210,150,40,0.5)', background: 'rgba(210,150,40,0.12)',
+        };
+
+        function checkNow() {
+            setBusy(true);
+            fetch(absoluteUrl(API_BASE + '/update/check'), { method: 'POST' })
+                .then(function (r) { return r.json(); })
+                .then(function () { return refreshUpdateStatus(); })
+                .catch(function () { /* keep old status */ })
+                .then(function () { setBusy(false); });
+        }
+        function applyNow() {
+            if (!window.confirm(t('settings.update.confirm'))) return;
+            setBusy(true);
+            fetch(absoluteUrl(API_BASE + '/update/apply'), {
+                method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}',
+            }).catch(function () { /* the swap reports failures via /update status */ });
+        }
+
+        var available = Boolean(status && status.available);
+        var latest = status ? status.current : '…';
+        var detail = status
+            ? (status.recoveryRequired
+                ? t('settings.update.recovery')
+                : available
+                    ? (status.latest + (status.notes ? ' — ' + String(status.notes).slice(0, 120) : ''))
+                    : (busy[0] ? t('settings.update.checking') : t('settings.update.uptodate')))
+            : t('settings.update.checking');
+        return createElement('div', null,
+            available ? createElement('div', { style: banner },
+                createElement('div', { style: { fontWeight: 600, marginBottom: 4 } },
+                    t('settings.update.available') + ' (v' + (status ? status.latest : '') + ')'),
+                createElement('div', { style: desc }, detail),
+                createElement('button', {
+                    style: Object.assign({}, styles.tool, { marginTop: 6 }),
+                    disabled: busy[0],
+                    onClick: applyNow,
+                }, t('settings.update.apply')),
+            ) : null,
+            createElement('div', { style: row },
+                createElement('div', { style: textWrap },
+                    createElement('div', { style: title }, t('settings.update.auto.title')),
+                    createElement('div', { style: desc }, detail + ' · v' + latest + (status && status.checkedAt ? ' · ' + new Date(status.checkedAt).toLocaleString() : '')),
+                ),
+                createElement('button', { style: styles.tool, disabled: busy[0], onClick: checkNow }, t('settings.update.check')),
+                SegGroup({
+                    value: hours, setValue: props.setUpdateCheckHours,
+                    keys: UPDATE_HOURS_KEYS,
+                    labels: { 6: '6h', 24: t('settings.update.daily'), 168: t('settings.update.weekly'), 0: t('settings.update.off') },
+                }),
+            ),
+        );
+    }
+
+    function useStoreValue(store) {
+        return react.useSyncExternalStore ? react.useSyncExternalStore(store.subscribe, store.getSnapshot) : store.getSnapshot();
     }
 
     // --- tab body: toolbar + iframe over the Host's static viewer -----------
@@ -284,6 +369,17 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
                     'settings.mode.description': '打开查看器时的界面。simple = agent 驱动的简洁画布；full = 完整 Mol* 界面（左侧控制树 / 序列 / 工具栏）。',
                     'settings.mode.simple': '简洁',
                     'settings.mode.full': '完整 Mol*',
+                    'settings.update.auto.title': '结构视图：自动检查更新',
+                    'settings.update.check': '检查更新',
+                    'settings.update.checking': '正在检查更新…',
+                    'settings.update.uptodate': '已是最新版本',
+                    'settings.update.available': '结构视图插件有新版本',
+                    'settings.update.apply': '立即更新并重载',
+                    'settings.update.confirm': '将下载新版本并热重载本插件（失败会自动回滚）。继续？',
+                    'settings.update.recovery': '上次升级未完成：请恢复备份后重启应用',
+                    'settings.update.daily': '每天',
+                    'settings.update.weekly': '每周',
+                    'settings.update.off': '关闭',
                 },
                 en: {
                     'settings.controlcard.title': 'Structure view: panel card',
@@ -295,6 +391,17 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
                     'settings.mode.description': 'UI on open. simple = agent-driven minimal canvas; full = complete Mol* app (control tree / sequence / toolbar).',
                     'settings.mode.simple': 'Simple',
                     'settings.mode.full': 'Full Mol*',
+                    'settings.update.auto.title': 'Structure view: automatic update check',
+                    'settings.update.check': 'Check now',
+                    'settings.update.checking': 'Checking for updates…',
+                    'settings.update.uptodate': 'Up to date',
+                    'settings.update.available': 'A new version of the structure plugin is available',
+                    'settings.update.apply': 'Update & reload now',
+                    'settings.update.confirm': 'This downloads the new release and hot-reloads the plugin (automatic rollback on failure). Continue?',
+                    'settings.update.recovery': 'Previous upgrade unfinished: restore the backup and restart the app',
+                    'settings.update.daily': 'Daily',
+                    'settings.update.weekly': 'Weekly',
+                    'settings.update.off': 'Off',
                 },
             });
         }, 'mol-structure: settings dictionaries');
@@ -306,8 +413,10 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
                 .then(function (j) {
                     if (j && CC_MODES.indexOf(j.controlCard) >= 0) controlCardStore.set(j.controlCard);
                     if (j && MODE_KEYS.indexOf(j.defaultMode) >= 0) defaultModeStore.set(j.defaultMode);
+                    if (j && typeof j.updateCheckHours === 'number') updateCheckHoursStore.set(j.updateCheckHours);
                 })
                 .catch(function () { /* host unreachable — keep default */ });
+            refreshUpdateStatus();
             return ctx.slots.inject('settings.general.item', function () {
                 return ctx.slots.register({
                     name: 'settings.general.item',
@@ -325,6 +434,10 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
                             setDefaultMode: function (mode) {
                                 defaultModeStore.set(mode);
                                 saveSettings({ defaultMode: mode }).catch(function () { /* keep optimistic value */ });
+                            },
+                            setUpdateCheckHours: function (hours) {
+                                updateCheckHoursStore.set(hours);
+                                saveSettings({ updateCheckHours: hours }).catch(function () { /* keep optimistic value */ });
                             },
                         };
                     },
@@ -368,6 +481,19 @@ window.__ModuleLoader__.load({ id: 'dsh-mol-structure', factory: function (requi
                 try { ctx.sidebarRight.openTab(TAB_KIND, {}); } catch (e) {
                     console.warn('mol-structure: openTab failed', e);
                 }
+            });
+            // Update reminders: the host emits `update` once per new release
+            // (auto check is on by default) and `upgraded` after a swap.
+            source.addEventListener('update', function (event) {
+                try {
+                    var data = JSON.parse(event.data || '{}');
+                    updateStatusStore.set(Object.assign({}, updateStatusStore.getSnapshot(), {
+                        available: true, latest: data.latest, notes: data.notes, current: data.current,
+                    }));
+                } catch (e) { /* malformed event */ }
+            });
+            source.addEventListener('upgraded', function () {
+                refreshUpdateStatus();
             });
             return function () { try { source.close(); } catch (e) { /* already gone */ } };
         }, 'mol-structure: panel-open stream');

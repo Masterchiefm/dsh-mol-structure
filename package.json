@@ -1,8 +1,8 @@
 {
   "name": "dsh-mol-structure",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "type": "module",
-  "description": "结构生物学插件：在 dsh 右侧边栏内嵌 Mol* v5 结构查看器（内置 IscB 7XHT / Cas12i 6W5C 论文复现面板，可隐藏），agent 可通过 mol_* 工具加载结构、按需渲染、标注与测量，实时感知用户点选，并能注册自定义视图与操作按钮；HTTP /command 接口对任意本地程序开放同一套控制词汇；支持简洁/完整 Mol* 双模式与状态快照、mmCIF 导出。",
+  "description": "一个让 DeepSeek Harness (dsh) 能够进行结构生物学信息分析、展示的插件：在 dsh 右侧边栏内嵌本地 Mol* v5 结构查看器，让你在对话里直接加载、渲染、标注和分析分子结构（PDB/mmCIF 等），AI 可以将结构生物学分析的图像直接展示给你。",
   "main": "./index.js",
   "exports": {
     ".": "./index.js",
@@ -39,7 +39,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "capture": "node tools/capture-panels.mjs",
-    "check": "node --check index.js && node --check client.js && node --check host/trust.js && node --check host/push.js && node --check host/state.js && node --check host/static.js && node --check host/tools.js && node --check host/reload.js && node scripts/host-smoke.mjs"
+    "manifest": "node tools/build-manifest.mjs",
+    "check": "node --check index.js && node --check client.js && node --check host/trust.js && node --check host/push.js && node --check host/state.js && node --check host/static.js && node --check host/tools.js && node --check host/reload.js && node --check host/updater.js && node scripts/host-smoke.mjs && node scripts/updater-smoke.mjs"
   },
   "dsh": {
     "bundle": {
