@@ -111,9 +111,14 @@ export async function buildScene(viewer, cfg) {
         step('createStructure');
         const structure = await plugin.builders.structure.createStructure(model, { name: 'model', params: {} });
         step('groups');
-        for (const g of cfg.groups || []) {
+        for (let i = 0; i < (cfg.groups || []).length; i++) {
+            const g = cfg.groups[i];
+            // A unique tag per group is MANDATORY: addRepresentation with the
+            // same (default) tag replaces the previous layer, which silently
+            // dropped every group but the last one in multi-group scenes.
+            g.tag = g.tag || g.id || `g${i}`;
             const comp = await plugin.builders.structure.tryCreateComponentFromExpression(
-                structure, groupExpr(g), g.id, { label: g.label || g.id },
+                structure, groupExpr(g), g.id || g.tag, { label: g.label || g.id || g.tag },
             );
             if (comp) await addRep(plugin, comp, g);
         }

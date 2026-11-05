@@ -376,6 +376,11 @@ BH `#2FCC3B`、REC `#C0C0C0`、WED `#EDDE4C`、TI `#DBC79E`、linker `#7B4FD0`�
 `docs/screenshots/cas9/` 与 `docs/screenshots/cas12/`，README「Case study」两节有图、
 机制分析与点突变建议表。
 
+**展示结构前必须先开侧边栏（policy）**：插件无法强制展开 dsh 右侧栏（宿主 UI 状态，
+无 API 可碰），`mol_panel` 只能请求切换到「结构视图」页签。因此凡是涉及结构展示/
+分析的请求，agent 必须在 `mol_load` 等任何 3D 操作**之前**主动调用 `mol_panel`，
+让用户立刻看到画面，而不是只汇报文字结果；右侧栏被用户收起时在回复里提示展开。
+
 ## 视角（已校准，勿随意改）
 
 各面板 pose 在 `src/config.js` 的 `FIGURES[id].view`（yaw/pitch 绕世界 Y/X 的轨道角、
