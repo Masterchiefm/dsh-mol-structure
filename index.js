@@ -38,7 +38,7 @@ import { PluginUpdater } from './host/updater.js'
 import { FIGURES } from './src/config.js'
 
 export const name = 'mol-structure'
-export const version = '0.5.0'
+export const version = '0.5.1'
 
 /** The composition must serve HTTP; everything else is optional below. */
 export const inject = ['webServer']
