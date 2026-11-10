@@ -18,6 +18,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
+import { releaseBytes } from './release-bytes.mjs'
 
 const packageDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const RELEASE_ENTRIES = [
@@ -69,10 +70,12 @@ function main() {
     const files = listReleaseFiles(packageDir)
     const rows = files.map(rel => {
         const full = path.join(packageDir, ...rel.split('/'))
-        const size = fs.statSync(full).size
-        if (size > MAX_FILE_BYTES) throw new Error(`${rel} (${size} bytes) exceeds the updater's per-file cap`)
-        const sha256 = crypto.createHash('sha256').update(fs.readFileSync(full)).digest('hex')
-        return { path: rel, size, sha256 }
+        // hash/size over canonical LF bytes — the updater verifies downloaded
+        // git blobs (LF) against both fields, whatever the local EOL is.
+        const bytes = releaseBytes(full)
+        if (bytes.length > MAX_FILE_BYTES) throw new Error(`${rel} (${bytes.length} bytes) exceeds the updater's per-file cap`)
+        const sha256 = crypto.createHash('sha256').update(bytes).digest('hex')
+        return { path: rel, size: bytes.length, sha256 }
     })
 
     const pkg = JSON.parse(fs.readFileSync(path.join(packageDir, 'package.json'), 'utf8'))

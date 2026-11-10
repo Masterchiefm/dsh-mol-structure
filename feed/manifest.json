@@ -1,7 +1,7 @@
 {
   "version": "0.5.0",
   "base": "../",
-  "publishedAt": 1794295464888,
+  "publishedAt": 1794296323848,
   "notes": "",
   "files": [
     {
@@ -11,8 +11,8 @@
     },
     {
       "path": "README.md",
-      "size": 7050,
-      "sha256": "f17c905ed612cb1d11e1c1830227e41d5e9d5f0d6987345b283e7780f077b457"
+      "size": 6923,
+      "sha256": "6ac08647036d99d5785855d4542725fb11ccb5aab834185115edb7644ded48e3"
     },
     {
       "path": "client.js",
@@ -146,13 +146,13 @@
     },
     {
       "path": "dist/structures/label-anchors-cas12i.json",
-      "size": 2854,
-      "sha256": "f16a705afea0a1bd879ac974c45bb89cf31a9a72becef35c90e4a0a84440ce7f"
+      "size": 2568,
+      "sha256": "2740f83e2be869cf0539cc3e42ced1fed00479bc186bd3f590a8f70e62a51bab"
     },
     {
       "path": "dist/structures/label-anchors-iscb.json",
-      "size": 7577,
-      "sha256": "d4aa3d4d9ae78028f30775d8b7fb8a411fbb3278c436f0ead1df8ac406f01750"
+      "size": 6871,
+      "sha256": "b61e8d9704286214385b6c56b763c5c2cde323ccac321bc8af1153b52e6eb2c8"
     },
     {
       "path": "host/panels.js",
@@ -221,8 +221,8 @@
     },
     {
       "path": "src/config.js",
-      "size": 704,
-      "sha256": "30d1b1e0698046012165f9376939afd3c03a5a9746a9a3ee06ff896264b5426e"
+      "size": 684,
+      "sha256": "1cf95e0706754a431fc830e01f8798e1a2546ab12fbc616bcd67d4f600499d92"
     },
     {
       "path": "src/helpers.js",
@@ -241,8 +241,8 @@
     },
     {
       "path": "src/papers/cas12i.js",
-      "size": 8800,
-      "sha256": "7686101294d072e08b6a0e8b487d30dc211eed417a5d4cbd2188e62c96c62e54"
+      "size": 8600,
+      "sha256": "46d7c9b972d3f0c118fcfcc8bb0f501c90dcfb5b17633d50b4908e648d4f7877"
     },
     {
       "path": "src/papers/iscb.js",

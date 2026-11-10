@@ -17,6 +17,7 @@ import os from 'node:os'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
+import { releaseBytes } from '../tools/release-bytes.mjs'
 
 const packageDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const updaterUrl = new URL('../host/updater.js', import.meta.url)
@@ -207,7 +208,8 @@ if (fs.existsSync(feedFile)) {
     const stale = shipped.files.filter(row => {
         const full = path.join(packageDir, ...row.path.split('/'))
         if (!fs.existsSync(full)) return true
-        return crypto.createHash('sha256').update(fs.readFileSync(full)).digest('hex') !== row.sha256
+        // compare against canonical LF bytes, same as build-manifest.mjs
+        return crypto.createHash('sha256').update(releaseBytes(full)).digest('hex') !== row.sha256
     })
     check('feed manifest hashes match the working copy', stale.length === 0, stale.slice(0, 3).map(r => r.path).join(', '))
 }
