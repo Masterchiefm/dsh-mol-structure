@@ -1,7 +1,7 @@
 {
   "version": "0.5.1",
   "base": "../",
-  "publishedAt": 1794296931896,
+  "publishedAt": 1794297817313,
   "notes": "",
   "files": [
     {
@@ -11,8 +11,8 @@
     },
     {
       "path": "README.md",
-      "size": 6923,
-      "sha256": "6ac08647036d99d5785855d4542725fb11ccb5aab834185115edb7644ded48e3"
+      "size": 7297,
+      "sha256": "35fa43b442d458777cf8ddf019ba8db2151e995b73bee299fd4f088a66da095b"
     },
     {
       "path": "client.js",

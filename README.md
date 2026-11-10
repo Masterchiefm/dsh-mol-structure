@@ -34,17 +34,32 @@
 
 ## 2. 安装
 
-### 方式 A · 让 dsh 里的 agent 安装（推荐）
+### 方式 A · npm 一键安装（推荐）
+
+插件已发布 [npm 包](https://www.npmjs.com/package/dsh-mol-structure)，一条命令装进
+web profile（其他 profile 把 `--profile web` 换成对应名字即可）：
+
+```bash
+dsh plugin --profile web add dsh-mol-structure
+```
+
+装完重启应用（或新开会话），右侧边栏出现「结构视图」卡片。
+
+### 方式 B · 让 dsh 里的 agent 安装
 
 在任一已打开的 dsh 会话里直接对 agent 说：
+
+> 请安装插件 `dsh-mol-structure`（npm 包）
+
+或给仓库地址源码安装：
 
 > 请安装插件 `https://github.com/Masterchiefm/dsh-mol-structure`
 
 agent 会调用 `plugin_manager`（`install_bundle`，target = 仓库目录的**绝对路径**，
 真实目录、不要符号链接）——自动完成 profile 依赖登记、`cordis.patch.yml` 挂载与
-client 半身注册。装完重启应用（或新开会话），右侧边栏出现「结构视图」卡片。
+client 半身注册。
 
-### 方式 B · 桌面端手动安装
+### 方式 C · 桌面端手动安装
 
 设置 → 插件 → **本地路径安装**，指向克隆出的目录；或者手动放置：
 
@@ -62,7 +77,7 @@ Do **not** add an entry to the profile `cordis.patch.yml` — the bundle's own
 2. 对 agent 说「加载 4oo8」→ `mol_load` 返回链清单并自动注册总览/界面视图；
 3. 在 3D 视图点击残基 → agent 用 `mol_status` 能读到该次点击。
 
-> 纯 web profile（`dsh web`）源码安装（复制即可用）：
+> 也可以源码安装（复制即可用；没有 npm 包时用这种方式）：
 >
 > ```bash
 > dsh plugin --profile web add github:Masterchiefm/dsh-mol-structure
