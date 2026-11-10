@@ -199,9 +199,10 @@ dsh-mol-structure/
 - **发版**：改码 → bump package.json + index.js version → `npm run build`（改 src/ 时）
   → `npm run manifest`（= `node tools/build-manifest.mjs`，无签名；文本按 LF 归一化后哈希，
   跨 autocrlf 平台一致）→ 提交推送（含 `feed/manifest.json`）。npm 发布由
-  `.github/workflows/build.yaml` 自动完成（trusted publishing / OIDC，无 token：
-  推 master 后检测到 package.json 版本号不在 registry 即发布，旧版本提交自动跳过），
-  **不要本地 `npm publish`**。受信发布配置在 npmjs.com 包 Settings → Trusted publishing
+  `.github/workflows/build.yaml` 完成（trusted publishing / OIDC，无 token），**仅手动触发**
+  （workflow_dispatch：用户明确要求时才 `gh workflow run build.yaml`，平时 push 不跑）；
+  触发后检测到 package.json 版本号不在 registry 即发布，旧版本自动跳过，**不要本地
+  `npm publish`**。受信发布配置在 npmjs.com 包 Settings → Trusted publishing
   （workflow 必须叫 `build.yaml`、Allowed actions 勾 npm publish、environment 留空）。
   `npm run check` 里的 updater-smoke 会校验 feed/manifest.json 与工作副本一致。
 

@@ -1,14 +1,13 @@
 # Build & publish dsh-mol-structure to npm via Trusted Publishing (OIDC).
 #
-# Publishes whenever a commit lands on master with a package.json version
-# that is not yet on the registry (bump version → commit → push, done).
+# Manual only (workflow_dispatch): bump version → commit → push, then trigger
+# explicitly (gh workflow run build.yaml). Publishes only when package.json's
+# version is not yet on the registry, so re-running is safe.
 # No NPM_TOKEN secret needed: the job's OIDC token is matched against the
 # trusted-publisher entry configured on npmjs.com (owner/repo/workflow file).
 name: Build & Publish
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
 
 concurrency:
