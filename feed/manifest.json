@@ -1,7 +1,7 @@
 {
   "version": "0.5.0",
   "base": "../",
-  "publishedAt": 1793867327334,
+  "publishedAt": 1794295464888,
   "notes": "",
   "files": [
     {
@@ -206,8 +206,8 @@
     },
     {
       "path": "package.json",
-      "size": 1801,
-      "sha256": "6ef4e7f29be87335455b4b509223aa98d1e340233c98b4d75eb7a2addef1b4a1"
+      "size": 1914,
+      "sha256": "94e7f952219255238a02d736d78bafefd86803a0c732038236a5a17569d42b79"
     },
     {
       "path": "src/bridge.js",

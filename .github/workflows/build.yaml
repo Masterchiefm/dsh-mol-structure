@@ -1,0 +1,69 @@
+# Build & publish dsh-mol-structure to npm via Trusted Publishing (OIDC).
+#
+# Publishes whenever a commit lands on master with a package.json version
+# that is not yet on the registry (bump version → commit → push, done).
+# No NPM_TOKEN secret needed: the job's OIDC token is matched against the
+# trusted-publisher entry configured on npmjs.com (owner/repo/workflow file).
+name: Build & Publish
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: npm-publish-master
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # required for npm trusted publishing (OIDC)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24' # bundles npm ≥ 11.5.1, which supports trusted publishing
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Verify npm supports trusted publishing (>= 11.5.1)
+        run: |
+          NPM_VERSION="$(npm --version)"
+          echo "npm version: $NPM_VERSION"
+          REQUIRED="11.5.1"
+          if [ "$(printf '%s\n' "$REQUIRED" "$NPM_VERSION" | sort -V | head -n1)" != "$REQUIRED" ]; then
+            echo "::error::npm $NPM_VERSION < $REQUIRED — trusted publishing unavailable, bump node-version"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Syntax + smoke checks
+        run: npm run check
+
+      - name: Build viewer bundle
+        run: npm run build
+
+      - name: Publish gate (skip when version already on npm)
+        id: gate
+        run: |
+          NAME="$(node -p "require('./package.json').name")"
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "package: ${NAME}@${VERSION}"
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "${VERSION} already on npm — skipping publish"
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "${VERSION} not on npm yet — will publish"
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm (trusted publishing / OIDC)
+        if: steps.gate.outputs.should_publish == 'true'
+        run: npm publish
